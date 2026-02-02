@@ -118,3 +118,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### sonar-report ###
+.sonar-report/
+.scannerwork/
