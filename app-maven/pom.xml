@@ -10,7 +10,10 @@
 	</parent>
 	<groupId>com.example.github.jfrog.maven</groupId>
 	<artifactId>app-maven</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+
+	<!-- <version>0.0.1-SNAPSHOT</version> -->
+	<version>${revision}</version>
+
 	<packaging>war</packaging>
 	<name>app-maven</name>
 	<description>Demo project for Spring Boot</description>
