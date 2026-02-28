@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    tools {
+        jfrog 'jfrog-cli-demojfrogchina'
+        // jfrog 'jfrog-cli-solengjfrog'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "正在检查代码..."
+                checkout scm
+            }
+        }
+
+        stage('Testing JFrog CLI') {
+            steps {
+                // Show the installed version of JFrog CLI.
+                jf '-v'
+
+                // Show the configured JFrog Platform instances.
+                jf 'c show'
+
+                // Ping Artifactory.
+                jf 'rt ping'
+
+                sh 'export JFROG_CLI_RELEASES_REPO="demojfrogchina/app1-generic-jfrog-remote"'
+                sh 'echo $JFROG_CLI_RELEASES_REPO'
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                echo "正在为 PR #${env.CHANGE_ID ?: 'Branch'} 执行构建和测试..."
+                // 这里替换成你的构建命令，例如 ./mvnw test 或 npm test
+                sh 'echo "Running unit tests..."'
+            }
+        }
+
+        stage('PR Specific Logic') {
+            // 只有当这是一个 Pull Request 时才执行此阶段
+            when {
+                changeRequest() 
+            }
+            steps {
+                echo "检测到这是一个 Pull Request (PR #${env.CHANGE_ID})"
+                echo "源分支: ${env.CHANGE_BRANCH}"
+                echo "目标分支: ${env.CHANGE_TARGET}"
+                echo "JOB_NAME: ${env.JOB_NAME}"
+                echo "BUILD_NUMBER: ${env.BUILD_NUMBER}"
+                
+                // 这里可以执行 PR 特有的操作，如静态代码扫描、发送评论等
+                sh 'echo "Performing PR-only security scan..."'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "构建成功！"
+        }
+        failure {
+            echo "构建失败，请检查代码。"
+        }
+    }
+}

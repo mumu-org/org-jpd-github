@@ -1,0 +1,8 @@
+version: 1
+type: npm
+resolver:
+    repo: slash-npm-virtual
+    serverId: setup-jfrog-cli-server
+deployer:
+    repo: slash-npm-virtual
+    serverId: setup-jfrog-cli-server
