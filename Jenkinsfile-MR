@@ -47,6 +47,8 @@ pipeline {
                 echo "检测到这是一个 Pull Request (PR #${env.CHANGE_ID})"
                 echo "源分支: ${env.CHANGE_BRANCH}"
                 echo "目标分支: ${env.CHANGE_TARGET}"
+                echo "JOB_NAME: ${env.JOB_NAME}"
+                echo "BUILD_NUMBER: ${env.BUILD_NUMBER}"
                 
                 // 这里可以执行 PR 特有的操作，如静态代码扫描、发送评论等
                 sh 'echo "Performing PR-only security scan..."'
