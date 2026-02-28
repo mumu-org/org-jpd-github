@@ -42,11 +42,6 @@ jobs:
       #     # JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
       #     JF_URL: ${{ vars.JF_URL }}
       #     JF_ACCESS_TOKEN: ${{ secrets.JF_SOLENG_ACCESS_TOKEN }}
-
-
-        # with:
-        #   oidc-provider-name: slash-github
-        #   oidc-audience: slash-github-audience
       
       - name: Run JFrog Curation Audit
         working-directory: ./app-npm  # 设置工作目录
@@ -77,16 +72,16 @@ jobs:
           echo "Xray Scan Build Artifacts"
           jf bs slash-jpd-github-npm ${{github.run_number}}
 
-      - name: Create evidence
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          jf evd create \
-            --build-name $GITHUB_WORKFLOW \
-            --build-number "${{ github.run_number }}" \
-            --key "${{ secrets.SIGNING_KEY }}" \
-            --key-alias ${{ vars.SIGNING_KEY_ALIAS }} \
-            --integration sonar
+      # - name: Create Sonar evidence
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     jf evd create \
+      #       --build-name $GITHUB_WORKFLOW \
+      #       --build-number "${{ github.run_number }}" \
+      #       --key "${{ secrets.SIGNING_KEY }}" \
+      #       --key-alias ${{ vars.SIGNING_KEY_ALIAS }} \
+      #       --integration sonar
       
       
 
