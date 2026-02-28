@@ -1,11 +1,32 @@
 pipeline {
     agent any
 
+    tools {
+        jfrog 'jfrog-cli-demojfrogchina'
+        // jfrog 'jfrog-cli-solengjfrog'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 echo "正在检查代码..."
                 checkout scm
+            }
+        }
+
+        stage('Testing JFrog CLI') {
+            steps {
+                // Show the installed version of JFrog CLI.
+                jf '-v'
+
+                // Show the configured JFrog Platform instances.
+                jf 'c show'
+
+                // Ping Artifactory.
+                jf 'rt ping'
+
+                sh 'export JFROG_CLI_RELEASES_REPO="demojfrogchina/app1-generic-jfrog-remote"'
+                sh 'echo $JFROG_CLI_RELEASES_REPO'
             }
         }
 
