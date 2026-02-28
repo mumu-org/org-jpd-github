@@ -47,17 +47,19 @@ pipeline {
 
                     // Install and publish project
                     jf 'mvn install -Drevision=v2.0.' + env.BUILD_NUMBER + '--build-name=' + env.RT_BUILD_NAME + ' --build-number=' + env.BUILD_NUMBER
-                }
-            }
-        }
-
-        stage('Publish build info') {
-            steps {
-                dir('app-maven') {
+                
                     jf 'rt build-publish ' + env.RT_BUILD_NAME  + ' ' + env.BUILD_NUMBER
                 }
             }
         }
+
+        // stage('Publish build info') {
+        //     steps {
+        //         dir('app-maven') {
+        //             jf 'rt build-publish ' + env.RT_BUILD_NAME  + ' ' + env.BUILD_NUMBER
+        //         }
+        //     }
+        // }
 
         stage('PR Specific Logic') {
             // 只有当这是一个 Pull Request 时才执行此阶段
