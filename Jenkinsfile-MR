@@ -79,10 +79,10 @@ pipeline {
 
     post {
         success {
-            echo "构建成功！"
+            echo "Pipeline 执行成功！"
         }
         failure {
-            echo "构建失败，请检查代码。"
+            echo "Pipeline 执行失败，请检查 code"
         }
     }
 }
