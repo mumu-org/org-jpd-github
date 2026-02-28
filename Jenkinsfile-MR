@@ -46,7 +46,7 @@ pipeline {
                     jf 'mvn-config --repo-resolve-releases slash-maven-virtual --repo-resolve-snapshots slash-maven-virtual --repo-deploy-releases slash-maven-test-local --repo-deploy-snapshots slash-maven-test-local'
 
                     // Install and publish project
-                    jf 'mvn install -Drevision=v2.0.' + env.BUILD_NUMBER + '--build-name=' + env.RT_BUILD_NAME + ' --build-number=' + env.BUILD_NUMBER
+                    jf 'mvn install -Drevision=v2.0.' + env.BUILD_NUMBER + ' --build-name=' + env.RT_BUILD_NAME + ' --build-number=' + env.BUILD_NUMBER
                 
                     jf 'rt build-publish ' + env.RT_BUILD_NAME  + ' ' + env.BUILD_NUMBER
                 }
