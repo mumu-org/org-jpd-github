@@ -37,6 +37,7 @@ jobs:
         env:
           JF_URL: ${{ vars.JF_CHINA_URL }}
           JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
 
   build:
     runs-on: ubuntu-latest
@@ -57,15 +58,6 @@ jobs:
           # Ping the server
           jf rt ping
           jf c show
-
-      # - name: Run JFrog CLI Frogbot Scan
-      #   uses: jfrog/frogbot@v2
-      #   env:
-      #     JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
-      #     # JF_URL: ${{ vars.JF_CHINA_URL }}
-      #     # JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
-      #     JF_URL: ${{ vars.JF_URL }}
-      #     JF_ACCESS_TOKEN: ${{ secrets.JF_SOLENG_ACCESS_TOKEN }}
       
       - name: Run JFrog Curation Audit
         working-directory: ./app-npm  # 设置工作目录
