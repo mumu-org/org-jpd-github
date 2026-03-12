@@ -47,7 +47,7 @@ public class AppMavenApplication {
 
 		logger.info(jsonObject.toString());
 
-		SpringApplication.run(AppMavenApplication.class, args);
+		SpringApplication.run(AppMavenApplication.class, args);  
 	}
 
 }

@@ -1,11 +1,11 @@
 version: 1
 type: maven
 resolver:
-    serverId: soleng-jfrog
+    serverId: demo-jfrogchina
     snapshotRepo: slash-maven-virtual
     releaseRepo: slash-maven-virtual
 deployer:
-    serverId: soleng-jfrog
+    serverId: demo-jfrogchina
     snapshotRepo: slash-maven-virtual
     releaseRepo: slash-maven-virtual
 useWrapper: true

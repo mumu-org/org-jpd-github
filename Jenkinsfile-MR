@@ -3,7 +3,12 @@ pipeline {
 
     tools {
         jfrog 'jfrog-cli-demojfrogchina'
-        // jfrog 'jfrog-cli-solengjfrog'
+        maven 'maven-3.9.9'
+    }
+
+    environment {
+        // 将斜杠替换为连字符，因为 Artifactory 对名称中的特殊字符有限制
+        RT_BUILD_NAME = "${env.JOB_NAME}".replace('/', '-')
     }
 
     stages {
@@ -35,6 +40,22 @@ pipeline {
                 echo "正在为 PR #${env.CHANGE_ID ?: 'Branch'} 执行构建和测试..."
                 // 这里替换成你的构建命令，例如 ./mvnw test 或 npm test
                 sh 'echo "Running unit tests..."'
+
+                dir('app-maven') {
+                    // Configure Maven project's repositories
+                    jf 'mvn-config --repo-resolve-releases slash-maven-virtual --repo-resolve-snapshots slash-maven-virtual --repo-deploy-releases slash-maven-test-local --repo-deploy-snapshots slash-maven-test-local'
+
+                    // Install and publish project
+                    jf 'mvn install -Drevision=v2.0.' + env.BUILD_NUMBER + ' --build-name=' + env.RT_BUILD_NAME + ' --build-number=' + env.BUILD_NUMBER
+                }
+            }
+        }
+
+        stage('Publish build info') {
+            steps {
+                dir('app-maven') {
+                    jf 'rt build-publish ' + env.RT_BUILD_NAME  + ' ' + env.BUILD_NUMBER
+                }
             }
         }
 
@@ -58,10 +79,10 @@ pipeline {
 
     post {
         success {
-            echo "构建成功！"
+            echo "Pipeline 执行成功！"
         }
         failure {
-            echo "构建失败，请检查代码。"
+            echo "Pipeline 执行失败，请检查 code"
         }
     }
 }
