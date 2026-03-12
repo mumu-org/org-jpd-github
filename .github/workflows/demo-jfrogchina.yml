@@ -27,6 +27,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+        # --- 关键步骤：配置 Java 环境 ---
+      - name: Set up JDK 17  # 根据你项目的实际版本修改
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # 开启缓存可以加快后续扫描速度
+
       - name: Run JFrog CLI Frogbot Scan
         uses: jfrog/frogbot@v2
         # [Mandatory if using OIDC authentication protocol instead of JF_ACCESS_TOKEN]
