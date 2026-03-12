@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         # The repository scanning will be triggered periodically on the following branches.
-        branch: ["demo-jfrogchina", "main"]
+        branch: ["demo-jfrogchina"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,13 +31,13 @@ jobs:
         uses: jfrog/frogbot@v2
         # [Mandatory if using OIDC authentication protocol instead of JF_ACCESS_TOKEN]
         # Insert to oidc-provider-name the 'Provider Name' defined in the OIDC integration configured in the JPD
-        # with:
-        #   oidc-provider-name: slash-github
-        #   oidc-audience: slash-github-audience
+        with:
+          oidc-provider-name: slash-github
+          oidc-audience: slash-github-audience
         env:
           JF_URL: ${{ vars.JF_CHINA_URL }}
           JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
-          JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
+          # JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
 
   # build:
   #   runs-on: ubuntu-latest
