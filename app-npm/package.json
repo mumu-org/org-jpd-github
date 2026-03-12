@@ -8,13 +8,11 @@
   },
   "author": "",
   "license": "ISC",
-
-  "publishConfig":{
-    "registry":"https://demo.jfrogchina.com/artifactory/api/npm/slash-npm-virtual/"
+  "publishConfig": {
+    "registry": "https://demo.jfrogchina.com/artifactory/api/npm/slash-npm-virtual/"
   },
-
   "dependencies": {
     "jest": "^29.7.0",
-    "lodash": "4.17.10"
+    "lodash": "^4.17.23"
   }
 }
