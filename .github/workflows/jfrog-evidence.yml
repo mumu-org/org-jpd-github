@@ -1,0 +1,75 @@
+# This workflow demonstrates building a Docker image, pushing it to JFrog Artifactory,
+# and attaching an SLSA build provenance attestation, which is stored in JFrog Evidence.
+
+name: Build, Push, and Attest to JFrog
+
+on:
+  push:
+    branches:
+      - jfrog-evidence
+  workflow_dispatch:
+
+# Use GitHub variables (vars) and secrets (secrets) for configuration
+env:
+  JF_REGISTRY: ${{ vars.JF_REGISTRY }}
+  JF_DOCKER_REPO: ${{ vars.JF_DOCKER_REPO }}
+  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+
+jobs:
+  build-and-attest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write      # Required for OIDC token access
+      attestations: write  # Required for attestation
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ vars.JF_CHINA_URL }}
+        with:
+          oidc-provider-name: slash-github
+          oidc-audience: slash-github-audience
+
+      - name: Run JFrog CLI
+        run: |
+          # Ping the server
+          jf rt ping
+          jf c show
+
+      - name: Build and Publish NPM Package
+        id: build-and-push
+        working-directory: ./app-npm  # 设置工作目录
+        run: |
+          echo "当前目录: $(pwd)"
+
+          VERSION=$(node -p "require('./package.json').version")
+          BASE_VERSION=${VERSION%.*}  # 获取主版本号 1.0
+          
+          # 使用 GitHub Actions 的 run_number 作为构建号
+          BUILD_NUMBER=${{ github.run_number }}
+
+          npm version ${BASE_VERSION}.${BUILD_NUMBER} --no-git-tag-version
+
+          jf npmc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve=slash-npm-virtual --repo-deploy=slash-npm-virtual
+          jf npm install --build-name=slash-jpd-github-npm --build-number=${{github.run_number}}
+          jf npm publish --build-name=slash-jpd-github-npm --build-number=${{github.run_number}}
+          jf rt bce slash-jpd-github-npm ${{github.run_number}}
+          jf rt bp slash-jpd-github-npm ${{github.run_number}}
+
+      - name: Attest Npm and Send to JFrog Evidence
+        uses: actions/attest-build-provenance@v3
+        with:
+          # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+          subject-name: oci://${{ env.JF_REGISTRY }}/${{ env.JF_DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          
+          # This links the attestation directly to the image digest from the build step
+          subject-digest: ${{ steps.build-and-push.outputs.digest }}
+
+
+
