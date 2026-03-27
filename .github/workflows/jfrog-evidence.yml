@@ -62,14 +62,14 @@ jobs:
           jf rt bce slash-jpd-github-npm ${{github.run_number}}
           jf rt bp slash-jpd-github-npm ${{github.run_number}}
 
-      - name: Attest Npm and Send to JFrog Evidence
-        uses: actions/attest-build-provenance@v3
-        with:
-          # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-name: oci://${{ env.JF_REGISTRY }}/${{ env.JF_DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+    #   - name: Attest Npm and Send to JFrog Evidence
+    #     uses: actions/attest-build-provenance@v3
+    #     with:
+    #       # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+    #       subject-name: npm://${{ env.JF_REGISTRY }}/${{ env.JF_DOCKER_REPO }}/${{ env.IMAGE_NAME }}
           
-          # This links the attestation directly to the image digest from the build step
-          subject-digest: ${{ steps.build-and-push.outputs.digest }}
+    #       # This links the attestation directly to the image digest from the build step
+    #       subject-digest: ${{ steps.build-and-push.outputs.digest }}
 
 
 
