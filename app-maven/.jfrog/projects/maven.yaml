@@ -8,4 +8,3 @@ deployer:
     serverId: demo-jfrogchina
     snapshotRepo: slash-maven-virtual
     releaseRepo: slash-maven-virtual
-useWrapper: true

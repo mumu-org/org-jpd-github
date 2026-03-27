@@ -44,23 +44,15 @@ jobs:
 
       - name: Build and Publish NPM Package
         id: build-and-push
-        working-directory: ./app-npm  # 设置工作目录
+        working-directory: ./app-maven  # 设置工作目录
         run: |
           echo "当前目录: $(pwd)"
 
-          VERSION=$(node -p "require('./package.json').version")
-          BASE_VERSION=${VERSION%.*}  # 获取主版本号 1.0
-          
-          # 使用 GitHub Actions 的 run_number 作为构建号
-          BUILD_NUMBER=${{ github.run_number }}
+          jf mvnc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve-releases=slash-maven-virtual --repo-resolve-snapshots=slash-maven-virtual --repo-deploy-releases=slash-maven-virtual --repo-deploy-snapshots=slash-maven-virtual
 
-          npm version ${BASE_VERSION}.${BUILD_NUMBER} --no-git-tag-version --allow-same-version
-
-          jf npmc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve=slash-npm-virtual --repo-deploy=slash-npm-virtual
-          jf npm install --build-name=slash-jpd-github-npm --build-number=${{github.run_number}}
-          jf npm publish --build-name=slash-jpd-github-npm --build-number=${{github.run_number}}
-          jf rt bce slash-jpd-github-npm ${{github.run_number}}
-          jf rt bp slash-jpd-github-npm ${{github.run_number}}
+          jf mvn install --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
+          jf rt bce slash-jpd-github-maven ${{github.run_number}}
+          jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
     #   - name: Attest Npm and Send to JFrog Evidence
     #     uses: actions/attest-build-provenance@v3
