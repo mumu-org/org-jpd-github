@@ -54,7 +54,7 @@ jobs:
           # 使用 GitHub Actions 的 run_number 作为构建号
           BUILD_NUMBER=${{ github.run_number }}
 
-          npm version ${BASE_VERSION}.${BUILD_NUMBER} --no-git-tag-version
+          npm version ${BASE_VERSION}.${BUILD_NUMBER} --no-git-tag-version --allow-same-version
 
           jf npmc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve=slash-npm-virtual --repo-deploy=slash-npm-virtual
           jf npm install --build-name=slash-jpd-github-npm --build-number=${{github.run_number}}
