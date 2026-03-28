@@ -11,9 +11,8 @@ on:
 
 # Use GitHub variables (vars) and secrets (secrets) for configuration
 env:
-  JF_REGISTRY: ${{ vars.JF_REGISTRY }}
-  JF_DOCKER_REPO: ${{ vars.JF_DOCKER_REPO }}
-  IMAGE_NAME: ${{ vars.IMAGE_NAME }}
+  JF_URL: ${{ vars.JF_CHINA_URL }}
+  JF_REPO: slash-maven-dev-local
 
 jobs:
   build-and-attest:
@@ -54,14 +53,14 @@ jobs:
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
           jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
-    #   - name: Attest Npm and Send to JFrog Evidence
-    #     uses: actions/attest-build-provenance@v3
-    #     with:
-    #       # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-    #       subject-name: npm://${{ env.JF_REGISTRY }}/${{ env.JF_DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+      - name: Generate artifact attestation to JFrog Evidence
+        uses: actions/attest-build-provenance@v3
+        with:
+          # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+          subject-path: 'slash-maven-dev-local/com/example/github/jfrog/maven/app-maven/2.1.0/app-maven-2.1.0.war'
           
-    #       # This links the attestation directly to the image digest from the build step
-    #       subject-digest: ${{ steps.build-and-push.outputs.digest }}
+          # This links the attestation directly to the image digest from the build step
+        #   subject-digest: ${{ steps.build-and-push.outputs.digest }}
 
 
 
