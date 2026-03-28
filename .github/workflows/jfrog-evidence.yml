@@ -72,8 +72,8 @@ jobs:
         #   tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
         run: |
           echo "当前目录: $(pwd)"
-          jf docker build -t soleng.jfrog.io/app-maven-docker:${{ github.run_number }} .
-          jf docker push soleng.jfrog.io/app-maven-docker:${{ github.run_number }} --build-name=slash-jpd-github-docker --build-number=${{github.run_number}}
+          jf docker build -t soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} .
+          jf docker push soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} --build-name=slash-jpd-github-docker --build-number=${{github.run_number}}
 
       - name: Attest Docker Image and Send to JFrog Evidence
         uses: actions/attest-build-provenance@v3
