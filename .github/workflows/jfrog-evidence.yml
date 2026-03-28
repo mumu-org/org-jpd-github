@@ -41,8 +41,8 @@ jobs:
           jf rt ping
           jf c show
 
-      - name: Build and Publish NPM Package
-        id: build-and-push
+      - name: Build maven Package
+        id: build-maven
         working-directory: ./app-maven  # 设置工作目录
         run: |
           echo "当前目录: $(pwd)"
@@ -51,16 +51,21 @@ jobs:
 
           jf mvn install --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
-          jf rt bp slash-jpd-github-maven ${{github.run_number}}
+          
 
       - name: Generate artifact attestation to JFrog Evidence
         uses: actions/attest-build-provenance@v3
         with:
           # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-path: 'slash-maven-dev-local/com/example/github/jfrog/maven/app-maven/2.1.0/app-maven-2.1.0.war'
+          subject-path: 'target/app-maven-2.1.0.war'
+
+      - name: Publish maven Package
+        id: publish-maven
+        working-directory: ./app-maven  # 设置工作目录
+        run: |
+          echo "当前目录: $(pwd)"
+          jf rt bp slash-jpd-github-maven ${{github.run_number}}
           
-          # This links the attestation directly to the image digest from the build step
-        #   subject-digest: ${{ steps.build-and-push.outputs.digest }}
 
 
 
