@@ -11,7 +11,7 @@ on:
 
 # Use GitHub variables (vars) and secrets (secrets) for configuration
 env:
-  JF_URL: ${{ vars.JF_CHINA_URL }}
+  JF_URL: ${{ vars.JF_URL }}
   JF_REPO: slash-maven-dev-local
 
 jobs:
@@ -30,10 +30,12 @@ jobs:
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: ${{ vars.JF_CHINA_URL }}
+          JF_URL: ${{ vars.JF_URL }}
         with:
-          oidc-provider-name: slash-github
-          oidc-audience: slash-github-audience
+        #   oidc-provider-name: slash-github
+        #   oidc-audience: slash-github-audience
+
+          oidc-provider-name: slash-l/jpd-github@github
 
       - name: Run JFrog CLI
         run: |
