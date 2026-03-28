@@ -60,21 +60,40 @@ jobs:
 
           jf mvn install --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
-          
+          jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
-      - name: Generate artifact attestation to JFrog Evidence
+      - name: Build and Push Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@v6
+        with:
+          file: app-maven/Dockerfile
+          push: true
+          tags: ${{ env.JF_URL }}/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
+
+      - name: Attest Docker Image and Send to JFrog Evidence
         uses: actions/attest-build-provenance@v3
         with:
-          # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-path: 'app-maven/target/app-maven-2.1.0.war'
-
-      - name: Publish maven Package
-        id: publish-maven
-        working-directory: ./app-maven  # 设置工作目录
-        run: |
-          echo "当前目录: $(pwd)"
-          jf rt bp slash-jpd-github-maven ${{github.run_number}}
+        # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+          subject-name: oci://${{ env.JF_URL }}/${{ env.JF_URL }}/app-maven
+        
+        # This links the attestation directly to the image digest from the build step
+          subject-digest: ${{ steps.build-and-push.outputs.digest }}
           
+
+    #   - name: Generate artifact attestation to JFrog Evidence
+    #     uses: actions/attest-build-provenance@v3
+    #     with:
+    #       # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+    #       subject-path: 'app-maven/target/app-maven-2.1.0.war'
+
+    #   - name: Publish maven Package
+    #     id: publish-maven
+    #     working-directory: ./app-maven  # 设置工作目录
+    #     run: |
+    #       echo "当前目录: $(pwd)"
+    #       jf rt bp slash-jpd-github-maven ${{github.run_number}}
+          
+
 
 
 
