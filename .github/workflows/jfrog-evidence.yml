@@ -74,7 +74,7 @@ jobs:
         id: build-and-push-docker
         uses: docker/build-push-action@v6
         with:
-          file: app-maven/Dockerfile
+          context: ./app-maven
           push: true
           tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven-docker:${{ github.run_number }}
         # run: |
