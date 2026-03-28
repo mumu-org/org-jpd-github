@@ -62,19 +62,23 @@ jobs:
           jf mvn install --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
           jf rt bp slash-jpd-github-maven ${{github.run_number}}
+          jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
       - name: Generate artifact attestation to JFrog Evidence
         uses: actions/attest-build-provenance@v3
         with:
           # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-path: 'app-maven/target/app-maven-2.1.0.war'
+        #   subject-path: 'app-maven/target/app-maven-2.1.0.war'
+          subject-name: gav://com.example.github.jfrog.maven:app-maven:2.1.0
 
-      - name: Publish maven Package
-        id: publish-maven
-        working-directory: ./app-maven  # 设置工作目录
-        run: |
-          echo "当前目录: $(pwd)"
-          jf rt bp slash-jpd-github-maven ${{github.run_number}}
+    #   - name: Publish maven Package
+    #     id: publish-maven
+    #     working-directory: ./app-maven  # 设置工作目录
+    #     run: |
+    #       echo "当前目录: $(pwd)"
+          
+
+
 
       ## ----------------------- docker images evidence --------------------------------------------
       - name: Log in to JFrog Docker Registry
@@ -91,12 +95,6 @@ jobs:
           context: ./app-maven
           push: true
           tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven-docker:${{ github.run_number }}
-        # run: |
-        #   echo "当前目录: $(pwd)"
-        #   jf docker build -t soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} .
-        #   jf docker push soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} --build-name=slash-jpd-github-docker --build-number=${{github.run_number}}
-        #   jf bp slash-jpd-github-docker ${{github.run_number}}
-
 
       - name: Attest Docker Image and Send to JFrog Evidence
         uses: actions/attest-build-provenance@v3
