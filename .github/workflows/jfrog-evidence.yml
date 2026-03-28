@@ -74,7 +74,7 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
         # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-name: oci://${{ env.JF_URL }}/${{ env.JF_URL }}/app-maven
+          subject-name: oci://${{ env.JF_URL }}/${{ env.JF_REPO }}/app-maven
         
         # This links the attestation directly to the image digest from the build step
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
