@@ -12,7 +12,7 @@ on:
 # Use GitHub variables (vars) and secrets (secrets) for configuration
 env:
   JF_URL: ${{ vars.JF_URL }}
-  JF_REPO: slash-maven-dev-local
+  JF_REPO: slash-docker-dev-local
 
 jobs:
   build-and-attest:
