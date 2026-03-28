@@ -64,6 +64,7 @@ jobs:
 
       - name: Build and Push Docker Image
         id: build-and-push-docker
+        working-directory: ./app-maven  # 设置工作目录
         # uses: docker/build-push-action@v6
         # with:
         #   file: app-maven/Dockerfile
