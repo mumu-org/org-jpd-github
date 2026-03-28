@@ -28,6 +28,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup JFrog CLI
+        id: setup-jfrog-cli
         uses: jfrog/setup-jfrog-cli@v4
         env:
           JF_URL: ${{ vars.JF_URL }}
@@ -62,18 +63,26 @@ jobs:
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
           jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
+      - name: Log in to JFrog Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.JF_URL }}
+          username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
+          password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
+
       - name: Build and Push Docker Image
         id: build-and-push-docker
-        working-directory: ./app-maven  # 设置工作目录
-        # uses: docker/build-push-action@v6
-        # with:
-        #   file: app-maven/Dockerfile
-        #   push: true
-        #   tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
-        run: |
-          echo "当前目录: $(pwd)"
-          jf docker build -t soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} .
-          jf docker push soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} --build-name=slash-jpd-github-docker --build-number=${{github.run_number}}
+        uses: docker/build-push-action@v6
+        with:
+          file: app-maven/Dockerfile
+          push: true
+          tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
+        # run: |
+        #   echo "当前目录: $(pwd)"
+        #   jf docker build -t soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} .
+        #   jf docker push soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} --build-name=slash-jpd-github-docker --build-number=${{github.run_number}}
+        #   jf bp slash-jpd-github-docker ${{github.run_number}}
+
 
       - name: Attest Docker Image and Send to JFrog Evidence
         uses: actions/attest-build-provenance@v3
