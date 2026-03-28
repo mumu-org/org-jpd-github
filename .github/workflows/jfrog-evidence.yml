@@ -30,7 +30,7 @@ jobs:
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: soleng.jfrog.io
+          JF_URL: ${{ vars.JF_URL }}
         with:
         #   oidc-provider-name: slash-github
         #   oidc-audience: slash-github-audience
@@ -68,13 +68,13 @@ jobs:
         with:
           file: app-maven/Dockerfile
           push: true
-          tags: ${{ env.JF_URL }}/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
+          tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
 
       - name: Attest Docker Image and Send to JFrog Evidence
         uses: actions/attest-build-provenance@v3
         with:
         # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-name: oci://${{ env.JF_URL }}/${{ env.JF_REPO }}/app-maven
+          subject-name: oci://soleng.jfrog.io/${{ env.JF_REPO }}/app-maven
         
         # This links the attestation directly to the image digest from the build step
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
