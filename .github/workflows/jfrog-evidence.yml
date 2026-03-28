@@ -76,7 +76,7 @@ jobs:
         with:
           file: app-maven/Dockerfile
           push: true
-          tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven:${{ github.run_number }}
+          tags: soleng.jfrog.io/${{ env.JF_REPO }}/app-maven-docker:${{ github.run_number }}
         # run: |
         #   echo "当前目录: $(pwd)"
         #   jf docker build -t soleng.jfrog.io/slash-docker-dev-local/app-maven-docker:${{ github.run_number }} .
