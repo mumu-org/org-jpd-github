@@ -41,6 +41,13 @@ jobs:
           jf rt ping
           jf c show
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # 它会根据所有包含的 pom.xml 生成缓存 Key
+
       - name: Build maven Package
         id: build-maven
         working-directory: ./app-maven  # 设置工作目录
@@ -57,7 +64,7 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
           # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-          subject-path: 'target/app-maven-2.1.0.war'
+          subject-path: 'app-maven/target/app-maven-2.1.0.war'
 
       - name: Publish maven Package
         id: publish-maven
