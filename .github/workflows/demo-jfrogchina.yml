@@ -89,15 +89,6 @@ jobs:
           echo "Xray Scan Build Artifacts"
           jf bs slash-jpd-github-npm ${{github.run_number}}
 
-      # - name: Create Sonar evidence
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #   run: |
-      #     jf evd create \
-      #       --build-name $GITHUB_WORKFLOW \
-      #       --build-number "${{ github.run_number }}" \
-      #       --key "${{ secrets.SIGNING_KEY }}" \
-      #       --key-alias ${{ vars.SIGNING_KEY_ALIAS }} \
-      #       --integration sonar
+      
       
       
