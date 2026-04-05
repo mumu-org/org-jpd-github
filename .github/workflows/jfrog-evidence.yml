@@ -99,9 +99,9 @@ jobs:
           EOF
 
           jf evd create \
-            --package-name com.example.github.jfrog.maven:app-maven \
+            --package-name "com.example.github.jfrog.maven:app-maven" \
             --package-version 2.1.0 \
-            --package-repo-name $JF_REPO \
+            --package-repo-name slash-maven-dev-local \
             --key "${{ secrets.JFROG_SIGNING_KEY }}" \
             --key-alias slash-evidence-public-key \
             --provider-id "github" \
