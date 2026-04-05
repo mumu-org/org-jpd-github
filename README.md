@@ -72,6 +72,9 @@ Docker image 通过 JFrog 集成方式注入 evidence
 
 ![alt text](images/evidence-docker.png)
 
+更多 Github Evidence 集成 Sample 参考：  
+https://github.com/jfrog/Evidence-Examples/tree/main/examples/github
+
 
 ## 2.3 Jenkins
 
