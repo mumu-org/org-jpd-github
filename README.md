@@ -9,6 +9,7 @@ JPD-GITHUB/
 ├── .jfrog/
 ├── app-maven
 ├── app-npm
+├── Jenkinsfile-evidence  // JPD Jenkins Evidence 集成
 └── README.md
 ```
 分支 demo-jfrogchina 提交，自动触发 Github Action，展示 JFrog Summary.  
