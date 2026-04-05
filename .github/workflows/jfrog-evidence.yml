@@ -102,9 +102,11 @@ jobs:
             --package-name com.example.github.jfrog.maven:app-maven \
             --package-version 2.1.0 \
             --package-repo-name $JF_REPO \
+            --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+            --key-alias slash-evidence-public-key \
             --provider-id "github" \
             --predicate ./provenance.json \
-            --predicate-type http://Github.com/build-provenance \
+            --predicate-type http://Github.com/build-provenance/v1
 
 
 
