@@ -5,7 +5,7 @@ JPD-GITHUB/
 ├── .githunb/
 │   └── workflows/
 │       ├── demo-jfrogchina.yml
-│       └── jfrog-github-oidc-example.yml
+│       └── jfrog-evidence.yml
 ├── .jfrog/
 ├── app-maven
 ├── app-npm
@@ -60,8 +60,16 @@ jf evd create \
 
 
 ## 2.2 Github
+Docker image 通过 JFrog 集成方式注入 evidence
 
+其它类型制品通过 JF 命令行注入 evidence
 
+参考 ./github/workflows/jfrog-evidence.yml
+
+通过 JPD `Evidence` tab 可以查看对应的 evidence
+![alt text](images/evidence-maven.png)
+
+![alt text](images/evidence-docker.png)
 
 
 ## 2.3 Jenkins

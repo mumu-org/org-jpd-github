@@ -35,9 +35,11 @@ jobs:
         env:
           JF_URL: ${{ vars.JF_URL }}
         with:
-        #   oidc-provider-name: slash-github
-        #   oidc-audience: slash-github-audience
+          # JPD On-prem Github OIDC Provider integration
+          # oidc-provider-name: slash-github
+          # oidc-audience: slash-github-audience
 
+          # JPD SaaS Github App integration
           oidc-provider-name: slash-l/jpd-github@github
 
       - name: Run JFrog CLI
