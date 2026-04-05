@@ -101,7 +101,7 @@ jobs:
           jf evd create \
             --package-name com.example.github.jfrog.maven:app-maven \
             --package-version 2.1.0 \
-            --package-repo-name $REPO_NAME \
+            --package-repo-name $JF_REPO \
             --provider-id "github" \
             --predicate ./provenance.json \
             --predicate-type http://Github.com/build-provenance \
