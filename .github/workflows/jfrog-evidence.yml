@@ -68,7 +68,7 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
           # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
-        #   subject-path: 'app-maven/target/app-maven-2.1.0.war'
+          subject-path: 'app-maven/target/app-maven-2.1.0.war'
           subject-name: gav://com.example.github.jfrog.maven:app-maven:2.1.0
 
     #   - name: Publish maven Package
