@@ -98,6 +98,7 @@ jobs:
           }
           EOF
 
+          ## maven artifact evidence
           jf evd create \
             --package-name "com.example.github.jfrog.maven:app-maven" \
             --package-version 3.0.${{github.run_number}} \
@@ -107,6 +108,17 @@ jobs:
             --provider-id "github" \
             --predicate ./provenance.json \
             --predicate-type http://Github.com/build-provenance/v1
+
+
+          ## build evidence
+          jf evd create \
+              --build-name slash-jpd-github-maven \
+              --build-number ${{github.run_number}} \
+              --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+              --key-alias slash-evidence-public-key \
+              --provider-id "github" \
+              --predicate ./provenance.json \
+              --predicate-type http://Github.com/build-provenance/v1
 
       ## --------------------------------------------------------------------------------------------------------------
 
