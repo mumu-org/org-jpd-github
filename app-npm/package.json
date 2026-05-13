@@ -14,19 +14,11 @@
   },
 
   "dependencies": {
-    "jest": "^29.7.0",
+    "axios": "1.13.6",
     "lodash": "4.17.10",
     "cors": "^2.8.5",
     "crossenv": "1.0.1",
     "ejs": "^2.5.5",
-    "express": "3.18.0",
-    "hapi": "0.0.6",
-    "hoek": "4.2.0",
-    "jsonwebtoken": "5.4.0",
-    "moment": "2.19.1",
-    "st": "0.2.4",
-    "underscore": "1.3.2",
-    "validator": "9.4.0",
-    "axios": "1.14.0"
+    "json-schema-deref": "0.1.0"
   }
 }

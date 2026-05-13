@@ -1,5 +1,8 @@
 package com.example.jfrog.maven.app_maven;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 

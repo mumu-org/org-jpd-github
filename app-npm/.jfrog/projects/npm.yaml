@@ -2,7 +2,7 @@ version: 1
 type: npm
 resolver:
     repo: slash-npm-virtual
-    serverId: setup-jfrog-cli-server
+    serverId: demo-jfrogchina
 deployer:
     repo: slash-npm-virtual
-    serverId: setup-jfrog-cli-server
+    serverId: demo-jfrogchina
