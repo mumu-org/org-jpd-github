@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 去掉 <parent> 块，改为直接声明坐标 -->
+    <groupId>com.example.github.jfrog.maven</groupId>
+    <artifactId>internal-utils</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!-- CVE-2021-21344, CVE-2021-21345, CVE-2021-21346 (CVSS 9.8/9.9) -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.15</version>
+        </dependency>
+
+        <!-- CVE-2022-1471 (CVSS 9.8) -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.29</version>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>slash-maven-virtual-releases</name>
+            <url>https://demo.jfrogchina.com/artifactory/slash-maven-whitelist</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>slash-maven-virtual-snapshots</name>
+            <url>https://demo.jfrogchina.com/artifactory/slash-maven-whitelist</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>

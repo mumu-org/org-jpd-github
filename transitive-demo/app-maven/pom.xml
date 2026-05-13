@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.0.2</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.example.github.jfrog.maven</groupId>
+    <artifactId>app-maven</artifactId>
+    <version>2.0.0</version>
+    <packaging>war</packaging>
+
+    <properties>
+        <java.version>17</java.version>
+        <sonar.organization>slash-l</sonar.organization>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 只声明内部工具包，不直接写 xstream/snakeyaml -->
+        <!-- xstream:1.4.15 和 snakeyaml:1.29 会作为传递依赖进入 war -->
+        <!-- <dependency>
+            <groupId>com.example.github.jfrog.maven</groupId>
+            <artifactId>internal-utils</artifactId>
+            <version>1.0.1</version>
+        </dependency> -->
+
+        <!-- 只依赖 internal-package，不直接声明 internal-utils/xstream/snakeyaml -->
+        <dependency>
+            <groupId>com.example.github.jfrog.maven</groupId>
+            <artifactId>internal-package</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- 保留你原有的直接漏洞做对比 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.21</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>slash-maven-virtual-releases</name>
+            <url>https://demo.jfrogchina.com/artifactory/slash-maven-whitelist</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>slash-maven-virtual-snapshots</name>
+            <url>https://demo.jfrogchina.com/artifactory/slash-maven-whitelist</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
