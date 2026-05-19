@@ -2,7 +2,7 @@
 # FROM slash.jfrog.local:30012/slash-docker-framework/docker-framework:v1.0
 
 # Use Soleng JPD docker framework image
-FROM demo.jfrogchina.com/slash-docker-dev-local/docker-framework:latest
+FROM soleng.jfrog.io/slash-docker-dev-local/docker-framework:latest
 
 LABEL MAINTAINER="Slash"
 
