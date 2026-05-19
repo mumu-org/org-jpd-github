@@ -1,6 +1,8 @@
+# User my AliCloud kubernetes JPD 
 # FROM slash.jfrog.local:30012/slash-docker-framework/docker-framework:v1.0
 
-FROM soleng.jfrog.io/slash-docker-framework/docker-framework:v1.0
+# Use Soleng JPD docker framework image
+FROM soleng.jfrog.io/slash-docker-dev-local/docker-framework:latest
 
 LABEL MAINTAINER="Slash"
 
