@@ -64,7 +64,9 @@ jobs:
 
           jf mvnc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve-releases=slash-maven-virtual --repo-resolve-snapshots=slash-maven-virtual --repo-deploy-releases=slash-maven-virtual --repo-deploy-snapshots=slash-maven-virtual
 
-          jf mvn install -Drevision=3.0.${{github.run_number}} --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
+          jf mvn install -Drevision=3.0.${{github.run_number}} \
+            -Dmaven.repo.local=$HOME/.m2/repository \
+            --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
           jf rt bce slash-jpd-github-maven ${{github.run_number}}
           jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
