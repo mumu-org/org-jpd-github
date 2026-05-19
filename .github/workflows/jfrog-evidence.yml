@@ -11,8 +11,11 @@ on:
 
 # Use GitHub variables (vars) and secrets (secrets) for configuration
 env:
-  JF_URL: ${{ vars.JF_URL }}
-  JPD_DOMAIN: ${{ vars.JPD_DOMAIN }}
+  # JF_URL: ${{ vars.JF_URL }}
+  # JPD_DOMAIN: ${{ vars.JPD_DOMAIN }}
+  JF_URL: ${{ vars.JF_CHINA_URL }}
+  JPD_DOMAIN: ${{ vars.JPD_CHINA_DOMAIN }}
+
   JF_DOCKER_REPO: slash-docker-dev-local
   JF_MAVEN_REPO: slash-maven-dev-local
 
@@ -134,8 +137,12 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.JF_URL }}
-          username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
-          password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
+          
+          # username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
+          # password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
+
+          username: slash
+          password: ${{ vars.JF_CHINA_ACCESS_TOKEN }}
 
       - name: Build and Push Docker Image
         id: build-and-push-docker
