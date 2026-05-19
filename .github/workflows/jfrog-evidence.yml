@@ -74,7 +74,7 @@ jobs:
         id: checksum
         run: |
           SHA=$(jf rt search \
-            "${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/2.1.0/app-maven-2.1.0.war" \
+            "${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war" \
             --props "" | jq -r '.[0].sha256')
           echo "sha256=$SHA" >> $GITHUB_OUTPUT
 
