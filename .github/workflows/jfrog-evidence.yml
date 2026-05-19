@@ -141,8 +141,8 @@ jobs:
           # username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
           # password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
 
-          oidc-provider-name: slash-github
-          oidc-audience: slash-github-audience
+          username: ${{ secrets.JPD_CHINA_USER }}
+          password: ${{ secrets.JPD_CHINA_PASSWORD }}
 
       - name: Build and Push Docker Image
         id: build-and-push-docker
