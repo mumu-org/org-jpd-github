@@ -54,6 +54,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven' # 它会根据所有包含的 pom.xml 生成缓存 Key
+          cache-dependency-path: ./app-maven/pom.xml
 
       - name: Build maven Package
         id: build-maven

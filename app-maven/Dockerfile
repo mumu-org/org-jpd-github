@@ -1,4 +1,6 @@
-FROM slash.jfrog.local:30012/slash-docker-framework/docker-framework:v1.0
+# FROM slash.jfrog.local:30012/slash-docker-framework/docker-framework:v1.0
+
+FROM soleng.jfrog.io/slash-docker-framework/docker-framework:v1.0
 
 LABEL MAINTAINER="Slash"
 
