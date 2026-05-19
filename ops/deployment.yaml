@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slash-docker-app-maven-deployment
+  namespace: slash-runtime-demo
+  labels:
+    app: docker-app-maven
+spec:
+  replicas: 1  # 副本数量
+  selector:
+    matchLabels:
+      app: docker-app-maven
+  template:
+    metadata:
+      labels:
+        app: docker-app-maven
+    spec:
+      imagePullSecrets:
+      - name: slash-jpd-docker-registry
+
+      containers:
+      - name: docker-app-maven
+        image: slash.jfrog.local:30012/slash-docker-virtual/docker-app-maven:v2.0.0
+        ports:
+        - containerPort: 8080 # Tomcat 默认端口
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+            
