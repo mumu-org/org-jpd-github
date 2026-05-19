@@ -13,7 +13,7 @@
 
     <groupId>com.example.github.jfrog.maven</groupId>
     <artifactId>app-maven</artifactId>
-    <version>2.0.0</version>
+    <version>1.1.0</version>
     <packaging>war</packaging>
 
     <properties>
@@ -38,14 +38,14 @@
         <!-- <dependency>
             <groupId>com.example.github.jfrog.maven</groupId>
             <artifactId>internal-utils</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.0</version>
         </dependency> -->
 
         <!-- 只依赖 internal-package，不直接声明 internal-utils/xstream/snakeyaml -->
         <dependency>
             <groupId>com.example.github.jfrog.maven</groupId>
             <artifactId>internal-package</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <!-- 保留你原有的直接漏洞做对比 -->
