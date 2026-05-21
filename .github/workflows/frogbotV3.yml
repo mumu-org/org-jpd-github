@@ -18,7 +18,7 @@ jobs:
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest # ubuntu-latest
     env:
-      JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
+      # JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
       JF_GIT_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
       JF_GIT_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
       JF_URL: ${{ secrets.JF_URL }}
@@ -52,6 +52,7 @@ jobs:
       JF_GIT_REPO: ${{ github.event.repository.name }}
       JFROG_CLI_LOG_LEVEL: "DEBUG"
       CI: "TRUE"
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
