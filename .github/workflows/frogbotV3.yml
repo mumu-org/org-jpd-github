@@ -16,7 +16,7 @@ permissions:
 jobs:
   pr-security-scan:
     if: github.event_name == 'pull_request_target'
-    runs-on: devf-dind-amd-scale-set # ubuntu-latest
+    runs-on: ubuntu-latest # ubuntu-latest
     env:
       JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
       JF_GIT_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
@@ -40,7 +40,7 @@ jobs:
 
   repository-scan:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: devf-dind-amd-scale-set # ubuntu-latest
+    runs-on: ubuntu-latest # ubuntu-latest
     env:
       JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
       JF_GIT_BASE_BRANCH: ${{ github.ref_name }}
