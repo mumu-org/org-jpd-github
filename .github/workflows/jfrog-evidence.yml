@@ -11,8 +11,11 @@ on:
 
 # Use GitHub variables (vars) and secrets (secrets) for configuration
 env:
+  # User Soleng JPD
   # JF_URL: ${{ vars.JF_URL }}
   # JPD_DOMAIN: ${{ vars.JPD_DOMAIN }}
+
+  # User Demo JPD
   JF_URL: ${{ vars.JF_CHINA_URL }}
   JPD_DOMAIN: ${{ vars.JPD_CHINA_DOMAIN }}
 
@@ -38,11 +41,11 @@ jobs:
         env:
           JF_URL: ${{ vars.JF_CHINA_URL }}
         with:
-          # JPD On-prem Github OIDC Provider integration
+          # User Demo JPD
           oidc-provider-name: slash-github
           oidc-audience: slash-github-audience
 
-          # JPD SaaS Github App integration
+          # User Soleng JPD
           # oidc-provider-name: slash-l/jpd-github@github
 
       - name: Run JFrog CLI
@@ -138,9 +141,11 @@ jobs:
         with:
           registry: ${{ env.JF_URL }}
 
+          # User Soleng JPD
           # username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
           # password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
 
+          # User Demo JPD
           username: ${{ secrets.JPD_CHINA_USER }}
           password: ${{ secrets.JPD_CHINA_PASSWORD }}
 
@@ -160,6 +165,8 @@ jobs:
         
           # This links the attestation directly to the image digest from the build step
           subject-digest: ${{ steps.build-and-push-docker.outputs.digest }}
+
+          # push-to-registry: true  # We only want to send the attestation to JFrog, not to a registry
       ## --------------------------------------------------------------------------------------------------------------
 
 
