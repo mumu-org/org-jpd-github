@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
   push:
     branches:
-      - main
+      - jfrog-evidence
   workflow_dispatch:
 
 permissions:
