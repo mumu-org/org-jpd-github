@@ -6,5 +6,6 @@ resolver:
     releaseRepo: slash-maven-virtual
 deployer:
     serverId: demo-jfrogchina
-    snapshotRepo: slash-maven-virtual
-    releaseRepo: slash-maven-virtual
+    snapshotRepo: slash-maven-whitelist
+    releaseRepo: slash-maven-whitelist
+useWrapper: true

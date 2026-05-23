@@ -4,11 +4,13 @@ JFrog integrates with Github
 JPD-GITHUB/
 ├── .githunb/
 │   └── workflows/
-│       ├── demo-jfrogchina.yml
-│       └── jfrog-github-oidc-example.yml
+│       ├── frogbotV3.yml
+│       ├── jfrog-jf-scan.yml
+│       └── jfrog-evidence.yml
 ├── .jfrog/
 ├── app-maven
 ├── app-npm
+├── Jenkinsfile-evidence  // JPD Jenkins Evidence 集成
 └── README.md
 ```
 分支 demo-jfrogchina 提交，自动触发 Github Action，展示 JFrog Summary.  
@@ -59,10 +61,35 @@ jf evd create \
 ![alt text](images/sonar-evidence-error.png)
 
 
-## 2.2 Jenkins
+## 2.2 Github
+Docker image 通过 JFrog 集成方式注入 evidence
+
+其它类型制品通过 JF 命令行注入 evidence
+
+参考 ./github/workflows/jfrog-evidence.yml
+
+通过 JPD `Evidence` tab 可以查看对应的 evidence
+![alt text](images/evidence-maven.png)
+
+![alt text](images/evidence-docker.png)
+
+更多 Github Evidence 集成 Sample 参考：  
+https://github.com/jfrog/Evidence-Examples/tree/main/examples/github
+
+
+## 2.3 Jenkins
 
 
 
-# 3. Jenkins
+# 3. AppTrust
+
+创建 application version
+```
+jf apptrust version-create slash-application 1.3.1 --source-type-packages "type=docker, name=app-maven-docker, version=44, repo-key=slash-docker-dev-local" \
+--source-type-builds "name=slash-jpd-github-maven, id=44"
+```
+
+
+
 
 

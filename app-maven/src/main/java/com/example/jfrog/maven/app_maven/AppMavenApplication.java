@@ -45,7 +45,7 @@ public class AppMavenApplication {
 		
 		JSON jsonObject = JSON.parseObject(payload);
 
-		logger.info(jsonObject.toString());
+		// logger.info(jsonObject.toString());
 
 		SpringApplication.run(AppMavenApplication.class, args);  
 	}

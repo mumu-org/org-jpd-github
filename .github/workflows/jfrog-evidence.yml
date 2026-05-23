@@ -1,0 +1,190 @@
+# This workflow demonstrates building a Docker image, pushing it to JFrog Artifactory,
+# and attaching an SLSA build provenance attestation, which is stored in JFrog Evidence.
+
+name: Build, Push, and Attest to JFrog
+
+on:
+  push:
+    branches:
+      # - jfrog-evidence
+      - main
+  workflow_dispatch:
+
+# Use GitHub variables (vars) and secrets (secrets) for configuration
+env:
+  # User Soleng JPD
+  # JF_URL: ${{ vars.JF_URL }}
+  # JPD_DOMAIN: ${{ vars.JPD_DOMAIN }}
+
+  # User Demo JPD
+  JF_URL: ${{ vars.JF_CHINA_URL }}
+  JPD_DOMAIN: ${{ vars.JPD_CHINA_DOMAIN }}
+
+  JF_DOCKER_REPO: slash-docker-dev-local
+  JF_MAVEN_REPO: slash-maven-dev-local
+
+jobs:
+  build-and-attest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write      # Required for OIDC token access
+      attestations: write  # Required for attestation
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog CLI
+        id: setup-jfrog-cli
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ vars.JF_CHINA_URL }}
+        with:
+          # User Demo JPD
+          oidc-provider-name: slash-github
+          oidc-audience: slash-github-audience
+
+          # User Soleng JPD
+          # oidc-provider-name: slash-l/jpd-github@github
+
+      - name: Run JFrog CLI
+        run: |
+          # Ping the server
+          jf rt ping
+          jf c show
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # 它会根据所有包含的 pom.xml 生成缓存 Key
+          cache-dependency-path: ./app-maven/pom.xml
+
+      - name: Build maven Package
+        id: build-maven
+        working-directory: ./app-maven  # 设置工作目录
+        run: |
+          echo "当前目录: $(pwd)"
+
+          jf mvnc --server-id-resolve=setup-jfrog-cli-server --server-id-deploy=setup-jfrog-cli-server --repo-resolve-releases=slash-maven-virtual --repo-resolve-snapshots=slash-maven-virtual --repo-deploy-releases=slash-maven-virtual --repo-deploy-snapshots=slash-maven-virtual
+
+          jf mvn install -Drevision=3.0.${{github.run_number}} \
+            -Dmaven.repo.local=$HOME/.m2/repository \
+            --build-name=slash-jpd-github-maven --build-number=${{github.run_number}}
+          jf rt bce slash-jpd-github-maven ${{github.run_number}}
+          jf rt bp slash-jpd-github-maven ${{github.run_number}}
+
+
+      ## --------------------------------------- maven artifact evidence --------------------------------------------
+      # 获取 WAR 文件的 SHA256（作为 evidence 的锚点）
+      - name: Get WAR checksum
+        id: checksum
+        run: |
+          SHA=$(jf rt search \
+            "${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war" \
+            --props "" | jq -r '.[0].sha256')
+          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+
+      # Build Provenance Evidence
+      - name: Attach Build Provenance Evidence to WAR
+        run: |
+          # 生成 provenance predicate（记录构建信息）
+          cat > provenance.json << EOF
+          {
+            "buildType": "https://github.com/actions/runner",
+            "builder": {
+              "id": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            },
+            "invocation": {
+              "configSource": {
+                "uri": "https://github.com/${{ github.repository }}",
+                "digest": { "sha1": "${{ github.sha }}" },
+                "entryPoint": ".github/workflows/jfrog-evidence.yml"
+              }
+            }
+          }
+          EOF
+
+          ## maven artifact evidence
+          jf evd create \
+            --package-name "com.example.github.jfrog.maven:app-maven" \
+            --package-version 3.0.${{github.run_number}} \
+            --package-repo-name ${{ env.JF_MAVEN_REPO }} \
+            --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+            --key-alias slash-evidence-public-key \
+            --provider-id "github" \
+            --predicate ./provenance.json \
+            --predicate-type http://Github.com/build-provenance/v1
+
+
+          ## build evidence
+          jf evd create \
+              --build-name slash-jpd-github-maven \
+              --build-number ${{github.run_number}} \
+              --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+              --key-alias slash-evidence-public-key \
+              --provider-id "github" \
+              --predicate ./provenance.json \
+              --predicate-type http://Github.com/build-provenance/v1
+
+      ## --------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+      ## --------------------------------------- docker images evidence --------------------------------------------
+      - name: Log in to JFrog Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.JF_URL }}
+
+          # User Soleng JPD
+          # username: ${{ steps.setup-jfrog-cli.outputs.oidc-user }}
+          # password: ${{ steps.setup-jfrog-cli.outputs.oidc-token }}
+
+          # User Demo JPD
+          username: ${{ secrets.JPD_CHINA_USER }}
+          password: ${{ secrets.JPD_CHINA_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        id: build-and-push-docker
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app-maven
+          push: true
+          tags: ${{ env.JPD_DOMAIN }}/${{ env.JF_DOCKER_REPO }}/app-maven-docker:${{ github.run_number }}
+
+      - name: Attest Docker Image and Send to JFrog Evidence
+        uses: actions/attest-build-provenance@v3
+        with:
+          # The 'oci://' prefix is required by JFrog to correctly parse the artifact type
+          subject-name: oci://${{ env.JPD_DOMAIN }}/${{ env.JF_DOCKER_REPO }}/app-maven-docker
+        
+          # This links the attestation directly to the image digest from the build step
+          subject-digest: ${{ steps.build-and-push-docker.outputs.digest }}
+
+          # push-to-registry: true  # We only want to send the attestation to JFrog, not to a registry
+      ## --------------------------------------------------------------------------------------------------------------
+
+
+
+
+      ## ----------------------- Sonar evidence (error，Sonar 企业版才能支持) --------------------------------------------
+      # - name: Create Sonar evidence
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     jf evd create \
+      #       --build-name $GITHUB_WORKFLOW \
+      #       --build-number "${{ github.run_number }}" \
+      #       --key "${{ secrets.SIGNING_KEY }}" \
+      #       --key-alias ${{ vars.SIGNING_KEY_ALIAS }} \
+      #       --integration sonar
+      ## -----------------------------------------------------------------------------------------
+
+
+

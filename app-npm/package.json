@@ -1,6 +1,6 @@
 {
   "name": "app-npm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "app npm demo",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,11 @@
   },
 
   "dependencies": {
-    "jest": "^29.7.0",
-    "lodash": "4.17.10"
+    "axios": "1.13.6",
+    "lodash": "4.17.10",
+    "cors": "^2.8.5",
+    "crossenv": "1.0.1",
+    "ejs": "^2.5.5",
+    "json-schema-deref": "0.1.0"
   }
 }

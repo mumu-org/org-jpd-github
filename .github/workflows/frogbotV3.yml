@@ -1,0 +1,71 @@
+name: "Frogbot Security Scan"
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - jfrog-evidence
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+  security-events: write
+
+jobs:
+  pr-security-scan:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest # ubuntu-latest
+    env:
+      # JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
+      JF_GIT_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+      JF_GIT_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+      JF_URL: ${{ vars.JF_CHINA_URL }}
+      JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
+      JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
+      JF_GIT_REPO: ${{ github.event.repository.name }}
+      JF_GIT_OWNER: ${{ github.repository_owner }}
+      JF_GIT_PROVIDER: 'github'
+      JFROG_CLI_LOG_LEVEL: "DEBUG"
+      CI: "TRUE"
+    steps:
+      - name: Download Frogbot V3
+        run: |
+          curl -fSL \
+            -o frogbot \
+            "https://releases.jfrog.io/artifactory/frogbot/v3/3.0.0/frogbot-linux-amd64/frogbot"
+          chmod +x frogbot
+          ./frogbot scan-pull-request
+
+  # Push events trigger a repository scan
+  repository-scan:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest # ubuntu-latest
+    env:
+      # JF_GIT_API_ENDPOINT: 'https://github.jfrog.info/api/v3' # for github SH only
+      JF_GIT_BASE_BRANCH: ${{ github.ref_name }}
+      JF_URL: ${{ vars.JF_CHINA_URL }}
+      JF_ACCESS_TOKEN: ${{ secrets.JF_CHINA_ACCESS_TOKEN }}
+      JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
+      JF_GIT_PROVIDER: 'github'
+      JF_GIT_OWNER: ${{ github.repository_owner }}
+      JF_GIT_REPO: ${{ github.event.repository.name }}
+      JFROG_CLI_LOG_LEVEL: "DEBUG"
+      CI: "TRUE"
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: jfrog-evidence
+
+      - name: Download and run Frogbot V3
+        run: |
+          curl -fSL \
+            -o frogbot \
+            "https://releases.jfrog.io/artifactory/frogbot/v3/3.0.0/frogbot-linux-amd64/frogbot"
+          chmod +x frogbot
+          ./frogbot scan-repository
+
+

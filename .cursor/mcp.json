@@ -1,0 +1,15 @@
+{
+	"mcpServers": {
+		"jfrog-sast-mcp": {
+			"type": "stdio",
+			"command": "jf",
+			"args": [
+				"source-mcp",
+				"${workspaceFolder}"
+			]
+		},
+		"jfrog-mcp": {
+			"url": "https://soleng.jfrog.io/mcp"
+		}
+	}
+}
