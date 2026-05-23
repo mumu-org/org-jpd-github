@@ -48,6 +48,7 @@ jobs:
           # Ping the server
           jf rt ping
           jf c show
+          jf c use setup-jfrog-cli-server
       
       - name: Run JFrog Curation Audit
         working-directory: ./app-npm  # 设置工作目录
