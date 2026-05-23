@@ -4,7 +4,8 @@ JFrog integrates with Github
 JPD-GITHUB/
 ├── .githunb/
 │   └── workflows/
-│       ├── demo-jfrogchina.yml
+│       ├── frogbotV3.yml
+│       ├── jfrog-jf-scan.yml
 │       └── jfrog-evidence.yml
 ├── .jfrog/
 ├── app-maven
