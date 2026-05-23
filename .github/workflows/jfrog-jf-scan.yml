@@ -3,7 +3,7 @@ on:
   pull_request_target: 
     types: [opened, synchronize] # Triggers scan-pr flow for every opened/updated pull request
   push:
-    branches: [demo-jfrogchina]
+    branches: [main]
   workflow_dispatch: # The repository will be scanned on demand
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         # The repository scanning will be triggered periodically on the following branches.
-        branch: ["demo-jfrogchina"]
+        branch: ["main"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,17 +34,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'maven' # 开启缓存可以加快后续扫描速度
-
-      - name: Run JFrog CLI Frogbot Scan
-        uses: jfrog/frogbot@v2
-        # [Mandatory if using OIDC authentication protocol instead of JF_ACCESS_TOKEN]
-        # Insert to oidc-provider-name the 'Provider Name' defined in the OIDC integration configured in the JPD
-        with:
-          oidc-provider-name: slash-github
-          oidc-audience: slash-github-audience
-        env:
-          JF_URL: ${{ vars.JF_CHINA_URL }}
-          JF_GIT_TOKEN: ${{ secrets.SLASH_GITHUB_TOKEN }}
 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4

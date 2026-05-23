@@ -14,6 +14,7 @@ permissions:
   security-events: write
 
 jobs:
+  ###########################################################################################################
   # Pull request events trigger a security scan of the pull request
   pr-security-scan:
     if: github.event_name == 'pull_request_target'
@@ -42,7 +43,9 @@ jobs:
             "https://releases.jfrog.io/artifactory/frogbot/v3/3.0.0/frogbot-linux-amd64/frogbot"
           chmod +x frogbot
           ./frogbot scan-pull-request
+  ###########################################################################################################
 
+  ###########################################################################################################
   # Push events trigger a repository scan
   repository-scan:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -72,5 +75,5 @@ jobs:
             "https://releases.jfrog.io/artifactory/frogbot/v3/3.0.0/frogbot-linux-amd64/frogbot"
           chmod +x frogbot
           ./frogbot scan-repository
-
+  ###########################################################################################################
 
