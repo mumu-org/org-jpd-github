@@ -78,61 +78,80 @@ jobs:
           jf rt bp slash-jpd-github-maven ${{github.run_number}}
 
 
-      ## --------------------------------------- maven artifact evidence --------------------------------------------
-      # 获取 WAR 文件的 SHA256（作为 evidence 的锚点）
-      - name: Get WAR checksum
-        id: checksum
-        run: |
-          SHA=$(jf rt search \
-            "${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war" \
-            --props "" | jq -r '.[0].sha256')
-          echo "sha256=$SHA" >> $GITHUB_OUTPUT
+      # ## --------------------------------------- maven artifact evidence --------------------------------------------
+      # # 获取 WAR 文件的 SHA256（作为 evidence 的锚点）
+      # - name: Get WAR checksum
+      #   id: checksum
+      #   run: |
+      #     SHA=$(jf rt search \
+      #       "${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war" \
+      #       --props "" | jq -r '.[0].sha256')
+      #     echo "sha256=$SHA" >> $GITHUB_OUTPUT
 
-      # Build Provenance Evidence
-      - name: Attach Build Provenance Evidence to WAR
-        run: |
-          # 生成 provenance predicate（记录构建信息）
-          cat > provenance.json << EOF
-          {
-            "buildType": "https://github.com/actions/runner",
-            "builder": {
-              "id": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            },
-            "invocation": {
-              "configSource": {
-                "uri": "https://github.com/${{ github.repository }}",
-                "digest": { "sha1": "${{ github.sha }}" },
-                "entryPoint": ".github/workflows/jfrog-evidence.yml"
-              }
-            }
-          }
-          EOF
+      # # Build Provenance Evidence
+      # - name: Attach Build Provenance Evidence to WAR
+      #   run: |
+      #     # 生成 provenance predicate（记录构建信息）
+      #     cat > provenance.json << EOF
+      #     {
+      #       "buildType": "https://github.com/actions/runner",
+      #       "builder": {
+      #         "id": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #       },
+      #       "invocation": {
+      #         "configSource": {
+      #           "uri": "https://github.com/${{ github.repository }}",
+      #           "digest": { "sha1": "${{ github.sha }}" },
+      #           "entryPoint": ".github/workflows/jfrog-evidence.yml"
+      #         }
+      #       }
+      #     }
+      #     EOF
 
-          ## maven artifact evidence
-          jf evd create \
-            --package-name "com.example.github.jfrog.maven:app-maven" \
-            --package-version 3.0.${{github.run_number}} \
-            --package-repo-name ${{ env.JF_MAVEN_REPO }} \
-            --key "${{ secrets.JFROG_SIGNING_KEY }}" \
-            --key-alias slash-evidence-public-key \
-            --provider-id "github" \
-            --predicate ./provenance.json \
-            --predicate-type http://Github.com/build-provenance/v1
+      #     ## maven artifact evidence
+      #     jf evd create \
+      #       --package-name "com.example.github.jfrog.maven:app-maven" \
+      #       --package-version 3.0.${{github.run_number}} \
+      #       --package-repo-name ${{ env.JF_MAVEN_REPO }} \
+      #       --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+      #       --key-alias slash-evidence-public-key \
+      #       --provider-id "github" \
+      #       --predicate ./provenance.json \
+      #       --predicate-type http://Github.com/build-provenance/v1
 
 
-          ## build evidence
-          jf evd create \
-              --build-name slash-jpd-github-maven \
-              --build-number ${{github.run_number}} \
-              --key "${{ secrets.JFROG_SIGNING_KEY }}" \
-              --key-alias slash-evidence-public-key \
-              --provider-id "github" \
-              --predicate ./provenance.json \
-              --predicate-type http://Github.com/build-provenance/v1
+      #     ## build evidence
+      #     jf evd create \
+      #         --build-name slash-jpd-github-maven \
+      #         --build-number ${{github.run_number}} \
+      #         --key "${{ secrets.JFROG_SIGNING_KEY }}" \
+      #         --key-alias slash-evidence-public-key \
+      #         --provider-id "github" \
+      #         --predicate ./provenance.json \
+      #         --predicate-type http://Github.com/build-provenance/v1
+
+      # ## --------------------------------------------------------------------------------------------------------------
+
 
       ## --------------------------------------------------------------------------------------------------------------
+      # 4. 计算 WAR 的 SHA256（作为 digest）
+      - name: Get WAR digest
+        id: war-digest
+        run: |
+          DIGEST="sha256:$(sha256sum target/app-maven-3.0.${{github.run_number}}.war | awk '{print $1}')"
+          echo "value=$DIGEST" >> $GITHUB_OUTPUT
 
+      # 5. 生成 GitHub Attestation，同时自动写入 JFrog Evidence
+      #    注意：这里用 subject-path 指向本地文件，不是 OCI 镜像
+      - name: Attest WAR (Build Provenance → JFrog Evidence)
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: 'target/app-maven-3.0.${{github.run_number}}.war'
+          # subject-name 填 Artifactory 中的完整路径，方便 JFrog 关联
+          subject-name: >-
+            ${{ env.JF_URL }}/${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war
 
+      ## --------------------------------------------------------------------------------------------------------------
 
 
 
