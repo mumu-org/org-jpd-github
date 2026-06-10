@@ -169,9 +169,7 @@ jobs:
 
           # push-to-registry: true  # We only want to send the attestation to JFrog, not to a registry
       ## --------------------------------------------------------------------------------------------------------------
-
-
-
+      
 
       ## ----------------------- Sonar evidence (error，Sonar 企业版才能支持) --------------------------------------------
       # - name: Create Sonar evidence
