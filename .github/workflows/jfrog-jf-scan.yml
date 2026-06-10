@@ -3,7 +3,8 @@ on:
   pull_request_target: 
     types: [opened, synchronize] # Triggers scan-pr flow for every opened/updated pull request
   push:
-    branches: [main]
+    branches:
+      - jfrog-build-scan
   workflow_dispatch: # The repository will be scanned on demand
 
 permissions:
@@ -22,7 +23,7 @@ jobs:
     strategy:
       matrix:
         # The repository scanning will be triggered periodically on the following branches.
-        branch: ["main"]
+        branch: ["jfrog-build-scan"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
