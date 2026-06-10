@@ -138,7 +138,7 @@ jobs:
       - name: Get WAR digest
         id: war-digest
         run: |
-          DIGEST="sha256:$(sha256sum target/app-maven-3.0.${{github.run_number}}.war | awk '{print $1}')"
+          DIGEST="sha256:$(sha256sum app-maven/target/app-maven-3.0.${{github.run_number}}.war | awk '{print $1}')"
           echo "value=$DIGEST" >> $GITHUB_OUTPUT
 
       # 5. 生成 GitHub Attestation，同时自动写入 JFrog Evidence
@@ -146,7 +146,7 @@ jobs:
       - name: Attest WAR (Build Provenance → JFrog Evidence)
         uses: actions/attest-build-provenance@v3
         with:
-          subject-path: 'target/app-maven-3.0.${{github.run_number}}.war'
+          subject-path: 'app-maven/target/app-maven-3.0.${{github.run_number}}.war'
           # subject-name 填 Artifactory 中的完整路径，方便 JFrog 关联
           subject-name: >-
             ${{ env.JF_URL }}/${{ env.JF_MAVEN_REPO }}/com/example/github/jfrog/maven/app-maven/3.0.${{github.run_number}}/app-maven-3.0.${{github.run_number}}.war
