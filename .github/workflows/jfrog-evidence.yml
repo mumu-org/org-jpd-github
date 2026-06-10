@@ -6,8 +6,8 @@ name: Build, Push, and Attest to JFrog
 on:
   push:
     branches:
-      # - jfrog-evidence
-      - main
+      - jfrog-evidence
+      # - main
   workflow_dispatch:
 
 # Use GitHub variables (vars) and secrets (secrets) for configuration
